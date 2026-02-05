@@ -7,7 +7,6 @@ export class TransactionsController {
     constructor(private readonly transactionsService: TransactionsService) {}
     @Post()
     createTransaction(@Body() createTransactionDto: CreateTransactionDto) {
-        // TODO: In a real app, extract userId from the authenticated user (e.g. req.user.id)
         const userId = 1; 
         return this.transactionsService.createTransaction(createTransactionDto, userId);
     }
