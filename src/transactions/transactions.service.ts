@@ -11,8 +11,8 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 export class TransactionsService {
   constructor(private readonly transactionsRepo: TransactionsRepository) {}
 
-  createTransaction(dto: CreateTransactionDto) {
-    return this.transactionsRepo.create(dto);
+  createTransaction(dto: CreateTransactionDto, userId: number) {
+    return this.transactionsRepo.create({ ...dto, userId });
   }
 
   getAllTransactions() {

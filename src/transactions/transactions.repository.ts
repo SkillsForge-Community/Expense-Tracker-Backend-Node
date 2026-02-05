@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import { TransactionCategory, TransactionType} from './transactions.types';
 
 interface CreateTransactionInput {
+  userId: number;
   description: string;
   category: TransactionCategory;
   type: TransactionType;

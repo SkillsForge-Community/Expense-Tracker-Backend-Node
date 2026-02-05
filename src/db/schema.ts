@@ -1,4 +1,5 @@
-import { mysqlTable, serial, text, varchar, decimal, int,timestamp} from 'drizzle-orm/mysql-core';
+import { mysqlTable, serial, text, varchar, decimal, int, timestamp, mysqlEnum } from 'drizzle-orm/mysql-core';
+import { TransactionCategoryValues, TransactionTypeValues } from '../transactions/transactions.types';
 
 export const users = mysqlTable('users', {
   id: serial('id').primaryKey(),
@@ -11,11 +12,10 @@ export const users = mysqlTable('users', {
 export const transactions = mysqlTable('transactions', {
   id: serial('id').primaryKey(),
   description: text('description'),
-  category: varchar('category', { length: 20 }), // INCOME or EXPENSE
-  type: varchar('type', { length: 30 }), // GIFT, TIP, etc.
+  category: mysqlEnum('category', TransactionCategoryValues as [string, ...string[]]), // INCOME or EXPENSE
+  type: mysqlEnum('type', TransactionTypeValues as [string, ...string[]]),
   createdOn: timestamp('created_on').defaultNow(),
   lastModifiedOn: timestamp('last_modified_on').defaultNow(),
   amount: decimal('amount', { precision: 15, scale: 3, mode: 'number' }),
   currency: varchar('currency', { length: 10 }), // NGN, USD, etc.
 });
-
