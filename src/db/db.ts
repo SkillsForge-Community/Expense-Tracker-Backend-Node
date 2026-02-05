@@ -3,11 +3,11 @@ import mysql from 'mysql2/promise';
 import {env} from '../config/env';
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT) || 3306,
+  host: env.DB_HOST,
+  user: env.DB_USER,
+  password: env.DB_PASS,
+  database: env.DB_NAME,
+  port: Number(env.DB_PORT) || 3306,
 });
 
 export const db = drizzle(pool);
