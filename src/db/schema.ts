@@ -1,4 +1,4 @@
-import { mysqlTable, serial, text, varchar, decimal, mysqlEnum, int, timestamp, bigint } from 'drizzle-orm/mysql-core';
+import { mysqlTable, serial, text, varchar, decimal, mysqlEnum, timestamp, bigint } from 'drizzle-orm/mysql-core';
 import { TransactionType, TransactionCategory, currency, UserType } from 'src/transactions/transactions.types';
 
 //users table
