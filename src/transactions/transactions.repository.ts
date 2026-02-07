@@ -35,7 +35,7 @@ export class TransactionsRepository {
   async update(id: number, tx: UpdateTransactionInput) {
     return this.dbClient
       .update(transactions)
-      .set({ ...tx, lastModifiedOn: new Date() })
+      .set({ ...tx, lastModifiedAt: new Date() })
       .where(eq(transactions.id, id));
   }
 
