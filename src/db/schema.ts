@@ -1,5 +1,6 @@
 import { mysqlTable, serial, text, varchar, decimal, mysqlEnum, timestamp, bigint } from 'drizzle-orm/mysql-core';
 import { TransactionType, TransactionCategory, currency, UserType } from 'src/transactions/transactions.types';
+import { sql } from 'drizzle-orm';
 
 //users table
 export const users = mysqlTable('users', {
@@ -13,12 +14,19 @@ export const users = mysqlTable('users', {
 //transactions table
 export const transactions = mysqlTable('transactions', {
   id: serial('id').primaryKey(),
-  userId: bigint('user_id', { mode: 'number', unsigned: true }).notNull().references(() => users.id),
+  userId: bigint('user_id', { mode: 'number', unsigned: true })
+            .notNull()
+            .references(() => users.id),
   description: text('description'),
   category: mysqlEnum('category', TransactionCategory).notNull(),
   type: mysqlEnum('type', TransactionType).notNull(),
-  createdAt: timestamp('created_on').defaultNow(),
-  lastModifiedAt: timestamp('last_modified_on').defaultNow(),
+  createdAt: timestamp('created_at')
+             .default(sql`CURRENT_TIMESTAMP`)
+             .notNull(),
+  updatedAt: timestamp('updated_at')
+              .default(sql`CURRENT_TIMESTAMP`)
+              .notNull()
+              .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
   amount: decimal('amount', { precision: 15, scale: 3, mode: 'number' }),
-  currency: mysqlEnum('currency', currency as unknown as [string, ...string[]]).notNull(), // NGN, USD, etc.
+  currency: mysqlEnum('currency', currency).notNull(), // NGN, USD, etc.
 });

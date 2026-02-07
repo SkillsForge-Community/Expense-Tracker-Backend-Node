@@ -21,10 +21,8 @@ export class CreateTransactionDto {
   amount!: number;
 
 
-  @IsString()
   @IsNotEmpty()
   @IsEnum(currency)
-  @Length(3, 3)
   currency!: currency;
 }
 

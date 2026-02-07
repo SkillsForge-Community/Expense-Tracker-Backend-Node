@@ -18,29 +18,37 @@ export class TransactionsRepository {
   
 
   async create(tx: CreateTransactionInput) {
-    return this.dbClient.insert(transactions).values(tx);
+    return this.dbClient
+      .insert(transactions)
+      .values(tx);
   }
 
 
   async findAll() {
-    return this.dbClient.select().from(transactions);
+    return this.dbClient
+      .select()
+      .from(transactions);
   }
 
 
   async findById(id: number) {
-    return this.dbClient.select().from(transactions).where(eq(transactions.id, id));
+    return this.dbClient.select()
+      .from(transactions)
+      .where(eq(transactions.id, id));
   }
 
 
   async update(id: number, tx: UpdateTransactionInput) {
     return this.dbClient
       .update(transactions)
-      .set({ ...tx, lastModifiedAt: new Date() })
+      .set(tx)
       .where(eq(transactions.id, id));
   }
 
 
     async delete(id: number) {
-    return this.dbClient.delete(transactions).where(eq(transactions.id, id));
+    return this.dbClient
+      .delete(transactions)
+      .where(eq(transactions.id, id));
   }
 }
