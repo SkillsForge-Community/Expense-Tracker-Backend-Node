@@ -1,0 +1,41 @@
+import { Controller, Get, Param, Put, Delete, Body, Post, ParseIntPipe } from '@nestjs/common';
+import { TransactionsService } from './transactions.service';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
+@Controller('transactions')
+export class TransactionsController {
+    constructor(private readonly transactionsService: TransactionsService) {}
+
+    
+    // CREATE transaction
+    @Post()
+    createTransaction(@Body() createTransactionDto: CreateTransactionDto) {
+        const userId = 1; 
+        return this.transactionsService.createTransaction(createTransactionDto, userId);
+    }
+
+
+    @Get()
+    getAllTransactions() {
+        return this.transactionsService.getAllTransactions();
+    }
+
+    // GET transaction by id
+    @Get(':id')
+    getTransactionById(@Param('id', ParseIntPipe) id: number) {
+        return this.transactionsService.getTransactionById(id);
+    }
+
+    // UPDATE transaction by id
+    @Put(':id')
+    updateTransaction(@Param('id',ParseIntPipe) id: number,
+                     @Body() updateTransactionDto: UpdateTransactionDto) {
+        return this.transactionsService.updateTransaction(id, updateTransactionDto);
+    }
+
+    // DELETE transaction by id
+    @Delete(':id')
+    deleteTransaction(@Param('id',ParseIntPipe) id: number){
+        return this.transactionsService.deleteTransaction(id);
+    } 
+}
