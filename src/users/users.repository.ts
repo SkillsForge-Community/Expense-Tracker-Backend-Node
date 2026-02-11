@@ -30,4 +30,12 @@ export class UsersRepository {
       .where(eq(users.id, id));
   }
 
+    async findByEmail(email: string) {
+    const result = await this.dbClient
+      .select()
+      .from(users)
+      .where(eq(users.email, email));
+    return result[0] || null;
+  }
+
 }
