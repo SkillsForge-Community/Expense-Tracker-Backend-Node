@@ -1,8 +1,7 @@
-import { Controller, Get, Param, Body, Post, ParseIntPipe, Query, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post, ParseIntPipe, Query, ForbiddenException, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/users-dto';
-
-
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -13,18 +12,20 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Query('adminId', ParseIntPipe) adminId: number) {
-    const isAdmin = await this.usersService.isAdmin(adminId);
+  async findAll(@Request() req: any) {
+    const isAdmin = req.user.userType === 'ADMIN';
     if (!isAdmin) {
       throw new ForbiddenException('Only admins can access this resource');
     }
     return this.usersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findById(@Query('adminId', ParseIntPipe) adminId: number, @Param('id', ParseIntPipe) id: number) {
-    const isAdmin = await this.usersService.isAdmin(adminId);
+  async findById(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
+    const isAdmin = req.user.userType === 'ADMIN';
     if (!isAdmin) {
       throw new ForbiddenException('Only admins can access this resource');
     }

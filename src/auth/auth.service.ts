@@ -34,7 +34,11 @@ export class AuthService {
       userType: user.userType,
     };
     
-    const token = jwt.sign(payload, env.JWT_SECRET || 'brjhjhjhghghghgkgkgkgk', {
+    if (!env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not configured');
+    }
+    
+    const token = jwt.sign(payload, env.JWT_SECRET, {
       expiresIn: '24h',
     });
     

@@ -2,7 +2,7 @@
 
 // @Injectable()
 // export class TransactionsService {}
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { TransactionsRepository } from './transactions.repository';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -14,18 +14,46 @@ export class TransactionsService {
   createTransaction(dto: CreateTransactionDto, userId: number) {
     return this.transactionsRepo.create({ ...dto, userId });
   }
+  
 
   getAllTransactions() {
     return this.transactionsRepo.findAll();
   }
 
-  getTransactionById(id: number) {
-    return this.transactionsRepo.findById(id);
+
+
+  async getTransactionById(id: number, userId: number) {
+    const [transaction] = await this.transactionsRepo.findById(id);
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+    if (transaction.userId !== userId) {
+      throw new ForbiddenException('You can only access your own transactions');
+    }
+    return transaction;
   }
-  updateTransaction(id: number, dto: UpdateTransactionDto) {
+
+
+  async updateTransaction(id: number, dto: UpdateTransactionDto, userId: number) {
+    const [transaction] = await this.transactionsRepo.findById(id);
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+    if (transaction.userId !== userId) {
+      throw new ForbiddenException('You can only update your own transactions');
+    }
     return this.transactionsRepo.update(id, dto);
   }
-    deleteTransaction(id: number) {
+
+
+    async deleteTransaction(id: number, userId: number) {
+    const [transaction] = await this.transactionsRepo.findById(id);
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+    if (transaction.userId !== userId) {
+      throw new ForbiddenException('You can only delete your own transactions');
+    }
     return this.transactionsRepo.delete(id);
   }
 }
