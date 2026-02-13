@@ -1,5 +1,5 @@
 import { TransactionCategory,TransactionType,currency } from "src/transactions/transactions.types";  
-import {IsEnum,IsNotEmpty,IsNumber,IsPositive,IsString,Length} from 'class-validator';
+import {IsEnum,IsNotEmpty,IsNumber,IsPositive,IsString} from 'class-validator';
 
 export class CreateTransactionDto {
   @IsString()
