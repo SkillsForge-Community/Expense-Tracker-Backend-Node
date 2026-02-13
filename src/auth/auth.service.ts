@@ -34,8 +34,12 @@ export class AuthService {
       email: user.email,
       userType: user.userType,
     };
-    
-    const token = jwt.sign(payload, env.JWT_SECRET! , {
+
+    if (!env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not configured');
+    }
+
+    const token = jwt.sign(payload, env.JWT_SECRET, {
       expiresIn: '1h',
     });
     
