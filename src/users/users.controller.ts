@@ -1,6 +1,9 @@
-import { Controller, Get, Param, Body, Post, ParseIntPipe, Query, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/users-dto';
+import { RolesGuard } from './roles.guard';
+import { Roles } from './roles.decorator';
+import { UserType } from 'src/transactions/transactions.types';
 
 
 
@@ -14,20 +17,16 @@ export class UsersController {
   }
 
   @Get()
-  async findAll(@Query('adminId', ParseIntPipe) adminId: number) {
-    const isAdmin = await this.usersService.isAdmin(adminId);
-    if (!isAdmin) {
-      throw new ForbiddenException('Only admins can access this resource');
-    }
+  @UseGuards(RolesGuard)
+  @Roles(UserType.ADMIN)
+  async findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  async findById(@Query('adminId', ParseIntPipe) adminId: number, @Param('id', ParseIntPipe) id: number) {
-    const isAdmin = await this.usersService.isAdmin(adminId);
-    if (!isAdmin) {
-      throw new ForbiddenException('Only admins can access this resource');
-    }
-      return this.usersService.findById(id);
+  @UseGuards(RolesGuard)
+  @Roles(UserType.ADMIN)
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findById(id);
   }
 }
