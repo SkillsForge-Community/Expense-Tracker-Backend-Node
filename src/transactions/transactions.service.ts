@@ -2,7 +2,7 @@
 
 // @Injectable()
 // export class TransactionsService {}
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TransactionsRepository } from './transactions.repository';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -23,36 +23,27 @@ export class TransactionsService {
 
 
   async getTransactionById(id: number, userId: number) {
-    const [transaction] = await this.transactionsRepo.findById(id);
+    const transaction = await this.transactionsRepo.findOneByIdAndUserId(id, userId);
     if (!transaction) {
       throw new NotFoundException('Transaction not found');
-    }
-    if (transaction.userId !== userId) {
-      throw new ForbiddenException('You can only access your own transactions');
     }
     return transaction;
   }
 
 
   async updateTransaction(id: number, dto: UpdateTransactionDto, userId: number) {
-    const [transaction] = await this.transactionsRepo.findById(id);
+    const transaction = await this.transactionsRepo.findOneByIdAndUserId(id, userId);
     if (!transaction) {
       throw new NotFoundException('Transaction not found');
-    }
-    if (transaction.userId !== userId) {
-      throw new ForbiddenException('You can only update your own transactions');
     }
     return this.transactionsRepo.update(id, dto);
   }
 
 
     async deleteTransaction(id: number, userId: number) {
-    const [transaction] = await this.transactionsRepo.findById(id);
+    const transaction = await this.transactionsRepo.findOneByIdAndUserId(id, userId);
     if (!transaction) {
       throw new NotFoundException('Transaction not found');
-    }
-    if (transaction.userId !== userId) {
-      throw new ForbiddenException('You can only delete your own transactions');
     }
     return this.transactionsRepo.delete(id);
   }

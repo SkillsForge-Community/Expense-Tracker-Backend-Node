@@ -1,8 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { db } from '../db/db';
 import { transactions } from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { InferInsertModel } from 'drizzle-orm';
+import { returnFirst } from 'src/utils/return-first';
 
 type CreateTransactionInput = InferInsertModel<typeof transactions>;
 type UpdateTransactionInput = Partial<Omit<
@@ -31,10 +32,14 @@ export class TransactionsRepository {
   }
 
 
-  async findById(id: number) {
-    return this.dbClient.select()
+  async findOneByIdAndUserId(id: number, userId: number) {
+    const rows = await this.dbClient
+      .select()
       .from(transactions)
-      .where(eq(transactions.id, id));
+      .where(and(eq(transactions.id, id), eq(transactions.userId, userId)))
+      .limit(1);
+
+    return returnFirst(rows);
   }
 
 

@@ -1,4 +1,6 @@
 import {IsNotEmpty, IsString, Length,IsEmail,IsStrongPassword } from 'class-validator';
+import { UserType } from 'src/transactions/transactions.types';
+
 export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
@@ -25,4 +27,11 @@ export class CreateUserDto {
     )
     passwordHash: string;
 
+}
+
+export class UserResponseDto {
+    id: number;
+    userType: UserType;
+    name: string;
+    email: string;
 }
