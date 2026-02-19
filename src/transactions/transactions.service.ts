@@ -2,7 +2,7 @@
 
 // @Injectable()
 // export class TransactionsService {}
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TransactionsRepository } from './transactions.repository';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -14,18 +14,37 @@ export class TransactionsService {
   createTransaction(dto: CreateTransactionDto, userId: number) {
     return this.transactionsRepo.create({ ...dto, userId });
   }
+  
 
   getAllTransactions() {
     return this.transactionsRepo.findAll();
   }
 
-  getTransactionById(id: number) {
-    return this.transactionsRepo.findById(id);
+
+
+  async getTransactionById(id: number, userId: number) {
+    const transaction = await this.transactionsRepo.findOneByIdAndUserId(id, userId);
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+    return transaction;
   }
-  updateTransaction(id: number, dto: UpdateTransactionDto) {
+
+
+  async updateTransaction(id: number, dto: UpdateTransactionDto, userId: number) {
+    const transaction = await this.transactionsRepo.findOneByIdAndUserId(id, userId);
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
     return this.transactionsRepo.update(id, dto);
   }
-    deleteTransaction(id: number) {
+
+
+    async deleteTransaction(id: number, userId: number) {
+    const transaction = await this.transactionsRepo.findOneByIdAndUserId(id, userId);
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
     return this.transactionsRepo.delete(id);
   }
 }
