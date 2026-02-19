@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
+import { UserDto } from './dto/users.dto';
 import { UsersRepository } from 'src/users/users.repository';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -34,19 +35,19 @@ export class AuthService {
       userType: user.userType,
     };
     
-    const token = jwt.sign(payload, env.JWT_SECRET || 'brjhjhjhghghghgkgkgkgk', {
-      expiresIn: '24h',
+    const token = jwt.sign(payload, env.JWT_SECRET! , {
+      expiresIn: '1h',
     });
     
-    // 4. Return token and user info
+   
     return {
       access_token: token,
-      user: {
+      user: new UserDto({
         id: user.id,
-        name: user.name,
         email: user.email,
         userType: user.userType,
-      },
+        name: user.name,
+      }),
     };
   }
 }
