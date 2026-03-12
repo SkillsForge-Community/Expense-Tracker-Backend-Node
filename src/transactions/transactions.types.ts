@@ -3,6 +3,20 @@ export enum TransactionCategory {
   EXPENSE = 'EXPENSE',
 }
 
+export enum RecurrenceFrequency {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  YEARLY = 'YEARLY',
+}
+
+export enum RecurrenceStatus {
+  ACTIVE = 'ACTIVE',
+  PAUSED = 'PAUSED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
 export enum TransactionType {
   HOUSING = 'HOUSING',
   TRANSPORTATION = 'TRANSPORTATION',

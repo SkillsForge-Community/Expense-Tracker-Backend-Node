@@ -45,6 +45,6 @@ export class TransactionsService {
     if (!transaction) {
       throw new NotFoundException('Transaction not found');
     }
-    return this.transactionsRepo.delete(id);
+    return this.transactionsRepo.softDelete(id);
   }
 }
