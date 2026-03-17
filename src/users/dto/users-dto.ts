@@ -25,7 +25,7 @@ export class CreateUserDto {
         {message: 'Password must be at least 8 characters long and include uppercase letters, lowercase letters, numbers, and symbols.',
         }
     )
-    passwordHash: string;
+    password: string;
 
 }
 

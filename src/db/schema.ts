@@ -95,9 +95,9 @@ export const transactions = mysqlTable('transactions', {
               .notNull()
               .$onUpdate(() => sql`CURRENT_TIMESTAMP`),
 
-  amount: decimal('amount', { precision: 15, scale: 3, mode: 'number' }),
+  amount: decimal('amount', { precision: 15, scale: 3, mode: 'number' }).notNull(),
 
-  currency: mysqlEnum('currency', currency).notNull(), // NGN, USD, etc.
+  currency: mysqlEnum('currency', currency).notNull(),
 
   deletedAt: timestamp('deleted_at'),
 }, (table) => ({

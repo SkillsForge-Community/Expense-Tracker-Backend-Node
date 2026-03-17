@@ -48,7 +48,10 @@ export class RecurringTransactionsService {
       throw new NotFoundException('Recurring transaction not found');
     }
 
-    const updatePayload: Record<string, unknown> = { ...dto };
+    type UpdateInput =
+    Parameters<RecurringTransactionsRepository['updateByIdAndUserId']>[2];
+
+    const updatePayload: UpdateInput = {};
 
     if (dto.startAt !== undefined) {
       updatePayload.startAt = this.toDate(dto.startAt, 'startAt');
@@ -62,9 +65,9 @@ export class RecurringTransactionsService {
       updatePayload.endAt = this.toDate(dto.endAt, 'endAt');
     }
 
-    const nextStartAt = (updatePayload.startAt as Date | undefined) ?? recurringTransaction.startAt;
-    const nextNextRunAt = (updatePayload.nextRunAt as Date | undefined) ?? recurringTransaction.nextRunAt;
-    const nextEndAt = (updatePayload.endAt as Date | undefined) ?? recurringTransaction.endAt;
+    const nextStartAt = updatePayload.startAt ?? recurringTransaction.startAt;
+    const nextNextRunAt = updatePayload.nextRunAt ?? recurringTransaction.nextRunAt;
+    const nextEndAt = updatePayload.endAt ?? recurringTransaction.endAt;
 
     this.validateSchedule(nextStartAt, nextNextRunAt, nextEndAt ?? undefined);
 
