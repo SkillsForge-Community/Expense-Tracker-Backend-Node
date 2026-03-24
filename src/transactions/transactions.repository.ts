@@ -1,8 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { db } from '../db/db';
 import { transactions } from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 import { InferInsertModel } from 'drizzle-orm';
+import { returnFirst } from 'src/utils/return-first';
 
 type CreateTransactionInput = InferInsertModel<typeof transactions>;
 type UpdateTransactionInput = Partial<Omit<
@@ -27,14 +28,19 @@ export class TransactionsRepository {
   async findAll() {
     return this.dbClient
       .select()
-      .from(transactions);
+      .from(transactions)
+      .where(isNull(transactions.deletedAt));
   }
 
 
-  async findById(id: number) {
-    return this.dbClient.select()
+  async findOneByIdAndUserId(id: number, userId: number) {
+    const rows = await this.dbClient
+      .select()
       .from(transactions)
-      .where(eq(transactions.id, id));
+      .where(and(eq(transactions.id, id), eq(transactions.userId, userId), isNull(transactions.deletedAt)))
+      .limit(1);
+
+    return returnFirst(rows);
   }
 
 
@@ -46,9 +52,10 @@ export class TransactionsRepository {
   }
 
 
-    async delete(id: number) {
+  async softDelete(id: number) {
     return this.dbClient
-      .delete(transactions)
+      .update(transactions)
+      .set({ deletedAt: sql`CURRENT_TIMESTAMP` })
       .where(eq(transactions.id, id));
   }
 }
